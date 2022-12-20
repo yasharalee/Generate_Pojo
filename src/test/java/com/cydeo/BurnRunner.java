@@ -17,7 +17,7 @@ public class BurnRunner {
         * following method will generate and add POJO files under "cydeo" package, dynamically
         * it is able to create List of custom Classes as well
         */
-        makePojo(jsToMap, "hr");
+        makePojo(jsToMap, "Hr");
 
 
     }
