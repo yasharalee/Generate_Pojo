@@ -12,8 +12,9 @@ public class BurnRunner {
         JsonPath jsonPath = sendThese("http://54.237.233.250:1000/ords/hr/countries");
         Map<String, Object> jsToMap = jsonPath.getObject("", Map.class);
 
-        //this method will generate and add POJO files under "cydeo" package, dynamically
-        //it is able to create List of custom Classes
+        //following method will generate and add POJO files under "cydeo" package, dynamically
+        //it is able to create List of custom Classes as well
+
         makePojo(jsToMap, "hr");
 
 
