@@ -3,7 +3,10 @@ package com.cydeo;
 import io.restassured.http.ContentType;
 import io.restassured.path.json.JsonPath;
 
-import java.io.*;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
@@ -21,28 +24,42 @@ public class BurnToClass {
         return jsonPath;
     }
 
-    public static void makePojo(Map<String, Object> map, String path) {
+    static int num = 1;
 
-        String className ;
+    public static void makePojo(Map<String, Object> map, String pathToFile, String packageName) {
+        String path = new String(pathToFile);
 
+        new File("src/test/java/com/cydeo/" + packageName).mkdir();
 
-        File file = new File("src/test/java/com/cydeo/" + path + ".java");
+        String className;
+        BufferedWriter writer = null;
+        boolean exists = new File("src/test/java/com/cydeo/pojos/" + path + ".java").exists();
+
+        File file = null;
         try {
+            if (exists) {
+                num++;
+                path += num;
+            }
+            file = new File("src/test/java/com/cydeo/pojos/" + path + ".java");
             file.createNewFile();
+
+
         } catch (IOException e) {
             e.getMessage();
         }
 
         try {
             FileWriter fileWriter = new FileWriter(file);
-            BufferedWriter writer = new BufferedWriter(fileWriter);
-            writer.write("package com.cydeo;\n\n");
+
+            writer = new BufferedWriter(fileWriter);
+            writer.write("package com.cydeo." + packageName + ";\n\n");
             writer.write("import com.fasterxml.jackson.annotation.JsonIgnoreProperties;\n");
             writer.write("import lombok.Data;\n\n");
             writer.write("import java.util.List;\n\n");
             writer.write("@Data\n");
             writer.write("@JsonIgnoreProperties(ignoreUnknown = true)\n");
-            writer.write("public class " + path + "{\n\n");
+            writer.write("public class " + path + " {\n\n");
 
             for (String each : map.keySet()) {
 
@@ -55,13 +72,21 @@ public class BurnToClass {
                     writer.write("private int " + each + ";\n");
                 }
                 if (entry instanceof List) {
-                    className = (each.substring(0,1).toUpperCase())+(each.substring(1).toLowerCase());
+                    className = (each.substring(0, 1).toUpperCase()) + (each.substring(1).toLowerCase());
+                    String entryName = ((List<?>) entry).get(0).getClass().toString();
+                    // entryName.substring(entryName.lastIndexOf(".")+1)
 
                     if (checkThisList((List) entry)) {
-                        writer.write("private List<" + ((List<?>) entry).get(0).getClass().toString().replace("class java.lang.", "") + "> " + className + ";\n");
-                    }else {
-                        makePojo((Map<String, Object>) ((List<?>) entry).get(0), className+"Class");
-                        writer.write("private List<"+ className + "Class" + ">" + each+";\n" );
+                        writer.write("private List<" + path + "> " + className + ";\n");
+                    } else {
+
+
+                        makePojo(
+                                (Map<String, Object>) ((List<?>) entry).get(0),
+                                className + "Class",
+                                packageName);
+
+                        writer.write("private List<" + className + "Class" + "> " + each + ";\n");
                     }
 
 
@@ -82,13 +107,15 @@ public class BurnToClass {
 
             writer.write("}");
 
-
-            writer.close();
-
-        } catch (FileNotFoundException e) {
-            e.getMessage();
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            e.getMessage();
+        } finally {
+            try {
+                assert writer != null;
+                writer.close();
+            } catch (IOException e) {
+                e.getMessage();
+            }
         }
 
 
