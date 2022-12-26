@@ -75,6 +75,10 @@ public class BurnToClass {
                     className = (each.substring(0, 1).toUpperCase()) + (each.substring(1).toLowerCase());
                     String entryName = ((List<?>) entry).get(0).getClass().toString();
                     // entryName.substring(entryName.lastIndexOf(".")+1)
+                    exists = new File("src/test/java/com/cydeo/pojos/" + className + ".java").exists();
+                    if (exists){
+                        className += num++;
+                    }
 
                     if (checkThisList((List) entry)) {
                         writer.write("private List<" + path + "> " + className + ";\n");
@@ -83,10 +87,10 @@ public class BurnToClass {
 
                         makePojo(
                                 (Map<String, Object>) ((List<?>) entry).get(0),
-                                className + "Class",
+                                className + "",
                                 packageName);
 
-                        writer.write("private List<" + className + "Class" + "> " + each + ";\n");
+                        writer.write("private List<" + className  + "> " + each + ";\n");
                     }
 
 
