@@ -26,8 +26,9 @@ public class BurnToClass {
 
     static int num = 1;
 
-    public static void makePojo(Map<String, Object> map, String pathToFile, String packageName) {
-        String path = new String(pathToFile);
+    public static void makePojo(Map<String, Object> map, String packageName, String fileName) {
+        String path = new String(fileName);
+        path = path.replace("@","");
 
         new File("src/test/java/com/cydeo/" + packageName).mkdir();
 
@@ -41,7 +42,7 @@ public class BurnToClass {
                 num++;
                 path += num;
             }
-            file = new File("src/test/java/com/cydeo/pojos/" + path + ".java");
+            file = new File("src/test/java/com/cydeo/"+packageName+"/" + path + ".java");
             file.createNewFile();
 
 
@@ -61,9 +62,12 @@ public class BurnToClass {
             writer.write("@JsonIgnoreProperties(ignoreUnknown = true)\n");
             writer.write("public class " + path + " {\n\n");
 
-            for (String each : map.keySet()) {
+            for (String eachOne : map.keySet()) {
 
-                Object entry = map.get(each);
+               String each = eachOne.replace("@","");
+
+                className = (each.substring(0, 1).toUpperCase()) + (each.substring(1).toLowerCase());
+                Object entry = map.get(eachOne);
 
                 if (entry instanceof String) {
                     writer.write("private String " + each + ";\n");
@@ -72,9 +76,8 @@ public class BurnToClass {
                     writer.write("private int " + each + ";\n");
                 }
                 if (entry instanceof List) {
-                    className = (each.substring(0, 1).toUpperCase()) + (each.substring(1).toLowerCase());
-                    String entryName = ((List<?>) entry).get(0).getClass().toString();
-                    // entryName.substring(entryName.lastIndexOf(".")+1)
+
+
                     exists = new File("src/test/java/com/cydeo/pojos/" + className + ".java").exists();
                     if (exists){
                         className += num++;
@@ -87,14 +90,19 @@ public class BurnToClass {
 
                         makePojo(
                                 (Map<String, Object>) ((List<?>) entry).get(0),
-                                className + "",
-                                packageName);
+                                packageName,
+                                className
+                                );
 
                         writer.write("private List<" + className  + "> " + each + ";\n");
                     }
 
 
                 }
+                if (entry instanceof Map) {
+                    writer.write("private Map <String, Object> " + each + ";\n");
+                }
+
                 if (entry instanceof Long) {
                     writer.write("private long " + each + ";\n");
                 }
