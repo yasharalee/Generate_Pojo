@@ -7,8 +7,9 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.util.List;
-import java.util.Map;
+import java.nio.CharBuffer;
+import java.util.*;
+import java.util.stream.Stream;
 
 import static io.restassured.RestAssured.given;
 
@@ -24,17 +25,26 @@ public class BurnToClass {
         return jsonPath;
     }
 
+
+
+
     static int num = 1;
 
+    /**
+     *  Creates Pojo Classes dynamically from Map
+     * @param map
+     * @param packageName
+     * @param fileName
+     */
+
     public static void makePojo(Map<String, Object> map, String packageName, String fileName) {
-        String classNameToCreated = new String(fileName);
-        classNameToCreated = classNameToCreated.replace("@","");
+        String classNameToCreated = new String(validateName(fileName,true));
 
         new File("src/test/java/com/cydeo/" + packageName).mkdir();
 
-        String propertyName;
+        String keyName;
         BufferedWriter writer = null;
-        boolean exists = new File("src/test/java/com/cydeo/pojos/" + classNameToCreated + ".java").exists();
+        boolean exists = new File("src/test/java/com/cydeo/"+packageName+"/" + classNameToCreated + ".java").exists();
 
         File file = null;
         try {
@@ -42,7 +52,7 @@ public class BurnToClass {
                 num++;
                 classNameToCreated += num;
             }
-            file = new File("src/test/java/com/cydeo/"+packageName+"/" + classNameToCreated + ".java");
+            file = new File("src/test/java/com/cydeo/" + packageName + "/" + classNameToCreated + ".java");
             file.createNewFile();
 
 
@@ -56,6 +66,7 @@ public class BurnToClass {
             writer = new BufferedWriter(fileWriter);
             writer.write("package com.cydeo." + packageName + ";\n\n");
             writer.write("import com.fasterxml.jackson.annotation.JsonIgnoreProperties;\n");
+            writer.write("import com.fasterxml.jackson.annotation.JsonProperty;\n");
             writer.write("import lombok.Data;\n\n");
             writer.write("import java.util.List;\n\n");
             writer.write("@Data\n");
@@ -64,54 +75,58 @@ public class BurnToClass {
 
             for (String eachOne : map.keySet()) {
 
-               String each = eachOne.replace("@","");
+                keyName = eachOne;
 
-                propertyName = (each.substring(0, 1).toUpperCase()) + (each.substring(1).toLowerCase());
+
                 Object entry = map.get(eachOne);
 
                 if (entry instanceof String) {
-                    writer.write("private String " + each + ";\n");
+                    writer.write("@JsonProperty(\""+eachOne+"\")\n");
+                    writer.write("private String " + keyName + ";\n");
                 }
                 if (entry instanceof Integer) {
-                    writer.write("private int " + each + ";\n");
+                    writer.write("@JsonProperty(\""+eachOne+"\")\n");
+
+                    writer.write("private int " + keyName + ";\n");
                 }
                 if (entry instanceof List) {
 
 
-                    exists = new File("src/test/java/com/cydeo/"+packageName+"/" + propertyName + ".java").exists();
-                    if (exists){
-                        propertyName += num++;
+                    exists = new File("src/test/java/com/cydeo/" + packageName + "/" + keyName + ".java").exists();
+                    if (exists) {
+                        keyName += num++;
                     }
 
                     if (checkThisList((List) entry)) {
-                        writer.write("private List<" + classNameToCreated + "> " + propertyName + ";\n");
+                        writer.write("@JsonProperty(\""+eachOne+"\")\n");
+                        writer.write("private List<" + classNameToCreated + "> " + keyName + ";\n");
                     } else {
 
 
-                        makePojo(
-                                (Map<String, Object>) ((List<?>) entry).get(0),
-                                packageName,
-                                propertyName
-                                );
-
-                        writer.write("private List<" + propertyName  + "> " + each + ";\n");
+                        makePojo((Map<String, Object>) ((List<?>) entry).get(0), packageName, keyName);
+                        writer.write("@JsonProperty(\""+eachOne+"\")\n");
+                        writer.write("private List<" + validateName(keyName,true) + "> " + keyName + ";\n");
                     }
 
 
                 }
                 if (entry instanceof Map) {
-                    writer.write("private Map <String, Object> " + each + ";\n");
+                    writer.write("@JsonProperty(\""+eachOne+"\")\n");
+                    writer.write("private Map <String, Object> " + keyName + ";\n");
                 }
 
                 if (entry instanceof Long) {
-                    writer.write("private long " + each + ";\n");
+                    writer.write("@JsonProperty(\""+eachOne+"\")\n");
+                    writer.write("private long " + keyName + ";\n");
                 }
                 if (entry instanceof Double) {
-                    writer.write("private double " + each + ";\n");
+                    writer.write("@JsonProperty(\""+eachOne+"\")\n");
+                    writer.write("private double " + keyName + ";\n");
                 }
 
                 if (entry instanceof Boolean) {
-                    writer.write("private boolean " + each + ";\n");
+                    writer.write("@JsonProperty(\""+eachOne+"\")\n");
+                    writer.write("private boolean " + keyName + ";\n");
                 }
 
 
@@ -140,6 +155,96 @@ public class BurnToClass {
             is = true;
         }
         return is;
+    }
+
+    /**
+     * Maintains Naming Convention for POJO files
+     * @param str
+     * @param isItClassName
+     * @return String
+     */
+
+    private static String validateName(String str, boolean isItClassName) {
+        str = str.trim();
+        int lastNum = 0;
+        int i = 0;
+
+
+        // Making PascalCase
+
+        if (isItClassName){
+            str = pascalCase(str);
+        }else {
+            str = str.toLowerCase().replace(" ","_");
+        }
+
+        // Remove the white space
+
+        if (str.contains(" ")) {
+            String[] temp = str.split(" ");
+            String dum = "";
+            if (isItClassName) {
+                for (String s : temp) {
+                    dum += pascalCase(s);
+                }
+            }else {
+                dum += temp[0];
+                for (int t = 1; t < temp.length; t++) {
+                    dum += pascalCase(temp[t]);
+                }
+            }
+            str = dum;
+        }
+
+
+        // Refactor the name if starting is not letter
+
+        if (!Character.isLetter(str.charAt(0))) {
+            while (!Character.isLetter(str.charAt(i++))) {
+                lastNum = i;
+            }
+            if (lastNum == str.length() - 1) {
+                Scanner in = new Scanner(System.in);
+                System.out.println("property name is not valid as variable name please enter valid name");
+                String name = in.next();
+                in.close();
+                str = validateName(name, isItClassName);
+
+            } else {
+                str = str.substring(lastNum);
+            }
+        }
+
+        // removes special characters from name
+//        char[] r = str.toCharArray();
+//        Stream<Character> list = CharBuffer.wrap(r).chars().mapToObj(h -> (char)h);
+//
+//        Iterator<Character> it = list.iterator();
+//
+//        while (it.hasNext()){
+//            Character l = it.next();
+//            if (!Character.isDigit(l) || !Character.isLetter(l)) {
+//                it.remove();
+//            }
+//        }
+//
+//        System.out.println(list);
+
+        return str;
+    }
+
+
+
+    /**
+     * formatting the given string to PascalCode
+     * @param str
+     * @return String
+     */
+
+    private static String pascalCase(String str) {
+        str = str.trim();
+        String s = str.substring(0, 1).toUpperCase() + str.substring(1);
+        return s;
     }
 
 
