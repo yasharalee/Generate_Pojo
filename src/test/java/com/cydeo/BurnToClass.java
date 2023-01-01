@@ -27,22 +27,22 @@ public class BurnToClass {
     static int num = 1;
 
     public static void makePojo(Map<String, Object> map, String packageName, String fileName) {
-        String path = new String(fileName);
-        path = path.replace("@","");
+        String classNameToCreated = new String(fileName);
+        classNameToCreated = classNameToCreated.replace("@","");
 
         new File("src/test/java/com/cydeo/" + packageName).mkdir();
 
-        String className;
+        String propertyName;
         BufferedWriter writer = null;
-        boolean exists = new File("src/test/java/com/cydeo/pojos/" + path + ".java").exists();
+        boolean exists = new File("src/test/java/com/cydeo/pojos/" + classNameToCreated + ".java").exists();
 
         File file = null;
         try {
             if (exists) {
                 num++;
-                path += num;
+                classNameToCreated += num;
             }
-            file = new File("src/test/java/com/cydeo/"+packageName+"/" + path + ".java");
+            file = new File("src/test/java/com/cydeo/"+packageName+"/" + classNameToCreated + ".java");
             file.createNewFile();
 
 
@@ -60,13 +60,13 @@ public class BurnToClass {
             writer.write("import java.util.List;\n\n");
             writer.write("@Data\n");
             writer.write("@JsonIgnoreProperties(ignoreUnknown = true)\n");
-            writer.write("public class " + path + " {\n\n");
+            writer.write("public class " + classNameToCreated + " {\n\n");
 
             for (String eachOne : map.keySet()) {
 
                String each = eachOne.replace("@","");
 
-                className = (each.substring(0, 1).toUpperCase()) + (each.substring(1).toLowerCase());
+                propertyName = (each.substring(0, 1).toUpperCase()) + (each.substring(1).toLowerCase());
                 Object entry = map.get(eachOne);
 
                 if (entry instanceof String) {
@@ -78,23 +78,23 @@ public class BurnToClass {
                 if (entry instanceof List) {
 
 
-                    exists = new File("src/test/java/com/cydeo/pojos/" + className + ".java").exists();
+                    exists = new File("src/test/java/com/cydeo/"+packageName+"/" + propertyName + ".java").exists();
                     if (exists){
-                        className += num++;
+                        propertyName += num++;
                     }
 
                     if (checkThisList((List) entry)) {
-                        writer.write("private List<" + path + "> " + className + ";\n");
+                        writer.write("private List<" + classNameToCreated + "> " + propertyName + ";\n");
                     } else {
 
 
                         makePojo(
                                 (Map<String, Object>) ((List<?>) entry).get(0),
                                 packageName,
-                                className
+                                propertyName
                                 );
 
-                        writer.write("private List<" + className  + "> " + each + ";\n");
+                        writer.write("private List<" + propertyName  + "> " + each + ";\n");
                     }
 
 
