@@ -112,7 +112,8 @@ public class BurnToClass {
                 }
                 if (entry instanceof Map) {
                     writer.write("@JsonProperty(\""+eachOne+"\")\n");
-                    writer.write("private Map <String, Object> " + keyName + ";\n");
+                    makePojo((Map<String, Object>) entry, packageName,validateName(keyName,true));
+                    writer.write("private " + validateName(keyName,true)+" " + keyName + ";\n");
                 }
 
                 if (entry instanceof Long) {

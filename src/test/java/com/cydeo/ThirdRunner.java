@@ -21,7 +21,7 @@ public class ThirdRunner {
         System.out.println("--------------------------------------------------------");
         System.out.println(map2);
 
-        BurnToClass.makePojo(map2, "Student", "students");
+        BurnToClass.makePojo(map2, "Student", "Students");
 
 
     }

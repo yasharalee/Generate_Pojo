@@ -36,7 +36,7 @@ public class SecondRunner {
         System.out.println("--------------------------------------------------------");
         System.out.println(map2);
 
-       BurnToClass.makePojo(map2, "bit", "news");
+       BurnToClass.makePojo(map2, "bit", "News");
 
 
     }
