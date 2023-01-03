@@ -13,7 +13,7 @@ public class RelativeLocation {
 @JsonProperty("type")
 private String type;
 @JsonProperty("geometry")
-private Geometry geometry;
+private Geometry1 geometry;
 @JsonProperty("properties")
-private Properties properties;
+private Properties2 properties;
 }

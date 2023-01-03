@@ -8,7 +8,7 @@ import java.util.List;
 
 @Data
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class Geometry2 {
+public class Geometry1 {
 
 @JsonProperty("type")
 private String type;

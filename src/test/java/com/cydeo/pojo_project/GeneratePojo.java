@@ -156,30 +156,28 @@ public class GeneratePojo {
                     if (exists) {
                         keyName += num++;
                     }
-                    if (((List<?>) entry).size() == 1){
 
-                    }else {
+                        if (checkThisList((List) entry)) {
+                            String type = ((List<?>) entry).get(0).getClass().toString() ;
+                            String typeName = type.substring(type.lastIndexOf(".")+1);
+                            writer.write("@JsonProperty(\"" + eachOne + "\")\n");
+                            writer.write("private List<" + typeName + "> " + validateReferenceName(eachOne) + ";\n");
+                        } else {
 
-                    }
-
-                    if (checkThisList((List) entry)) {
-                        String type = ((List<?>) entry).get(0).getClass().toString() ;
-                        String typeName = type.substring(type.lastIndexOf(".")+1);
-                        writer.write("@JsonProperty(\"" + eachOne + "\")\n");
-                        writer.write("private List<" + typeName + "> " + validateReferenceName(eachOne) + ";\n");
-                    } else {
-
-                        from((Map<String, Object>) ((List<?>) entry).get(0), packageName, keyName);
-                        writer.write("@JsonProperty(\"" + eachOne + "\")\n");
-                        writer.write("private List<" + classNameToCreated + "> " + validateReferenceName(eachOne) + ";\n");
-                    }
-
-
+                            from((Map<String, Object>) ((List<?>) entry).get(0), packageName, keyName);
+                            writer.write("@JsonProperty(\"" + eachOne + "\")\n");
+                            writer.write("private List<" + classNameToCreated + "> " + validateReferenceName(eachOne) + ";\n");
+                        }
                 }
                 if (entry instanceof Map) {
-                    writer.write("@JsonProperty(\"" + eachOne + "\")\n");
-                    from((Map<String, Object>) entry, packageName, validateClassName(keyName));
-                    writer.write("private " + validateClassName(keyName) + " " + validateReferenceName(eachOne) + ";\n");
+                    exists = new File("src/test/java/com/cydeo/pojo_project/" + packageName + "/" + validateClassName(keyName) + ".java").exists();
+
+                    keyName = exists ? validateClassName(keyName)+ num++ : validateClassName(keyName);
+
+                        writer.write("@JsonProperty(\"" + eachOne + "\")\n");
+                        from((Map<String, Object>) entry, packageName, validateClassName(keyName));
+                        writer.write("private " + validateClassName(keyName) + " " + validateReferenceName(eachOne) + ";\n");
+
                 }
 
                 if (entry instanceof Long) {
@@ -239,7 +237,7 @@ public class GeneratePojo {
 
         // Refactor the name if starting is not letter or there is no name
 
-        if (!Character.isLetter(str.charAt(0))) {
+        if (!Character.isLetter(str.charAt(i))) {
             while (!Character.isLetter(str.charAt(i++))) {
                 lastNum = i;
             }

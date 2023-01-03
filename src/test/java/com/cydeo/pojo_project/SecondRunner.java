@@ -6,6 +6,7 @@ import io.restassured.path.json.JsonPath;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.Set;
 
 import static io.restassured.RestAssured.given;
 
@@ -35,7 +36,11 @@ public class SecondRunner {
 
         Map<String, Object> map2 = jp.getObject("", Map.class);
         System.out.println("--------------------------------------------------------");
-        System.out.println(map2);
+        Set<String> keys = map2.keySet();
+        System.out.println(keys);
+        for (Map.Entry e: map2.entrySet()){
+            System.out.println(e);
+        }
 
        GeneratePojo.from(map2, "Weather", "weather");
 

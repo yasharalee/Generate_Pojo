@@ -8,7 +8,7 @@ import java.util.List;
 
 @Data
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class Properties3 {
+public class Properties2 {
 
 @JsonProperty("city")
 private String city;
