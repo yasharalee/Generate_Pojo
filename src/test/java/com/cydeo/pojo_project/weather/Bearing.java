@@ -1,15 +1,15 @@
-package com.cydeo.Student;
+package com.cydeo.pojo_project.weather;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 
-import java.util.List;
-
 @Data
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class Students {
+public class Bearing {
 
-@JsonProperty("students")
-private List<Students1> students1;
+@JsonProperty("unitCode")
+private String unitCode;
+@JsonProperty("value")
+private int value;
 }

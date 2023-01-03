@@ -1,4 +1,4 @@
-package com.cydeo;
+package com.cydeo.pojo_project;
 
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
@@ -14,7 +14,7 @@ public class FourthRunner {
                 .then().extract().jsonPath();
 
         Map<String, Object> map = jp.getObject("", Map.class);
-       BurnToClass.makePojo(map,"news","News");
+       GeneratePojo.from(map,"news","News");
 
 
     }

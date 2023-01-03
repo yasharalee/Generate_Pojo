@@ -1,5 +1,6 @@
-package com.cydeo;
+package com.cydeo.pojo_project;
 
+import com.cydeo.pojo_project.GeneratePojo;
 import io.restassured.http.ContentType;
 import io.restassured.path.json.JsonPath;
 
@@ -21,7 +22,7 @@ public class ThirdRunner {
         System.out.println("--------------------------------------------------------");
         System.out.println(map2);
 
-        BurnToClass.makePojo(map2, "Student", "Students");
+        GeneratePojo.from(map2, "Student", "Students");
 
 
     }
