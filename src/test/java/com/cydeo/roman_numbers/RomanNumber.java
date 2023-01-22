@@ -17,6 +17,8 @@ public class RomanNumber {
 //        System.out.println(RamanMethod.romanNumConvertor("(LX)"));
         System.out.println(RamanMethod.romanNumConvertor(987654));
         System.out.println(  RamanMethod.romanNumConvertor("(CM)(LXXX)(VII)DCLIV"));
+        System.out.println(RamanMethod.romanNumConvertor(80000));
+        System.out.println(  RamanMethod.romanNumConvertor("(LXXX)"));
 
 
     }

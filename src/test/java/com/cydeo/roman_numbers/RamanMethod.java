@@ -1,6 +1,8 @@
 package com.cydeo.roman_numbers;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 public class RamanMethod {
 
@@ -106,14 +108,14 @@ public class RamanMethod {
     private static Map<String, Integer> map = getMap("String");
 
     public static int romanNumConvertor(String str) {
-        if (str.length() == 0){
+        if (str.length() == 0) {
             return 0;
         }
         if (str.contains("(")) {
             String sub = str.substring(str.indexOf("(") + 1, str.indexOf(")"));
             String secSub = str.substring(str.indexOf(")") + 1);
             Integer s = (romanNumConvertor(sub) * 1000);
-            if (str.length() == sub.length()+2) {
+            if (str.length() == sub.length() + 2) {
                 return s;
             } else {
                 return s + romanNumConvertor(secSub);
@@ -121,13 +123,13 @@ public class RamanMethod {
 
         } else {
 
-            if (str.length() >= 2){
+            if (str.length() >= 2) {
                 if (getValue(str.charAt(1)) > getValue(str.charAt(0))) {
                     return getValue(str.charAt(1)) - getValue(str.charAt(0)) + romanNumConvertor(str.substring(2));
                 } else {
                     return getValue(str.charAt(0)) + romanNumConvertor(str.substring(1));
                 }
-            }else {
+            } else {
                 return getValue(str.charAt(0));
             }
 
@@ -155,29 +157,6 @@ public class RamanMethod {
         return map.get("" + str);
 
     }
-
-
-
-/*
-          14 = XIV
-          65 = LXV
-        1015 = (I)XV
-         104 = CIV
- */
-    /*
-     for (int i = 1; i < str.length(); i++) {
-                int target = i - 1;
-                Integer curr = getValue(str.charAt(i));
-                Integer per = getValue(str.charAt(target));
-
-                if (curr > per) {
-                    return curr - per;
-                } else {
-                    return per + curr;
-                }
-
-            }
-     */
 
 
 }
