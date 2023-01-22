@@ -112,8 +112,8 @@ public class RamanMethod {
         if (str.contains("(")) {
             String sub = str.substring(str.indexOf("(") + 1, str.indexOf(")"));
             String secSub = str.substring(str.indexOf(")") + 1);
-            Integer s = (getValue(sub) * 1000);
-            if (str.length() <= 4) {
+            Integer s = (romanNumConvertor(sub) * 1000);
+            if (str.length() == sub.length()+2) {
                 return s;
             } else {
                 return s + romanNumConvertor(secSub);

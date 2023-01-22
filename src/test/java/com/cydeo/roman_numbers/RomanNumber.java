@@ -5,16 +5,19 @@ public class RomanNumber {
 
         // numbers greater than 1_000_000 are not supported
 //
-        System.out.println("14: " + RamanMethod.romanNumConvertor(14));
-        System.out.println("65: " + RamanMethod.romanNumConvertor(65));
-        System.out.println("1015: " + RamanMethod.romanNumConvertor(1015));
-        System.out.println("104: " + RamanMethod.romanNumConvertor(104));
-        System.out.println("6000: " + RamanMethod.romanNumConvertor(60000));
-        System.out.println(RamanMethod.romanNumConvertor(("XIV")));
-        System.out.println(RamanMethod.romanNumConvertor(("LXV")));
-        System.out.println(RamanMethod.romanNumConvertor("(I)XV"));
-        System.out.println(RamanMethod.romanNumConvertor("CIV"));
-        System.out.println(RamanMethod.romanNumConvertor("(LX)"));
+//        System.out.println("14: " + RamanMethod.romanNumConvertor(14));
+//        System.out.println("66: " + RamanMethod.romanNumConvertor(66));
+//        System.out.println("1015: " + RamanMethod.romanNumConvertor(1015));
+//        System.out.println("104: " + RamanMethod.romanNumConvertor(104));
+//        System.out.println("6000: " + RamanMethod.romanNumConvertor(60000));
+//        System.out.println(RamanMethod.romanNumConvertor(("XIV")));
+//        System.out.println(RamanMethod.romanNumConvertor(("LXVI")));
+//        System.out.println(RamanMethod.romanNumConvertor("(I)XV"));
+//        System.out.println(RamanMethod.romanNumConvertor("CIV"));
+//        System.out.println(RamanMethod.romanNumConvertor("(LX)"));
+        System.out.println(RamanMethod.romanNumConvertor(987654));
+        System.out.println(  RamanMethod.romanNumConvertor("(CM)(LXXX)(VII)DCLIV"));
+
 
     }
 
