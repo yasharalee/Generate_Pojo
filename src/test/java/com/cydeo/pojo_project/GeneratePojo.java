@@ -256,13 +256,6 @@ public class GeneratePojo {
         }
 
 
-        str = str.replace("-", " ");
-        str = str.replace("_", " ");
-        if (str.contains(" ")) {
-            str = pascalCase(str);
-        }
-
-
         // removes special characters from name and make pascal case
         str = str.replace("-", " ");
         str = str.replace("_", " ");
