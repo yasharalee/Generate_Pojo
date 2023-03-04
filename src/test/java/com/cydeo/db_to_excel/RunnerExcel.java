@@ -5,6 +5,6 @@ public class RunnerExcel {
         fileWriter cn = new fileWriter("jdbc:oracle:thin:@54.237.233.250:1521:XE", "hr", "hr");
 
         cn.runQuery("select FIRST_NAME || ' ' || LAST_NAME as full_Name, DEPARTMENT_NAME from\n" + "    EMPLOYEES E inner join DEPARTMENTS D\n" + "on D.DEPARTMENT_ID = E.DEPARTMENT_ID");
-        cn.writeToExcel("employees", "empDep");
+        cn.writeToExcel("employees1", "empDep");
     }
 }

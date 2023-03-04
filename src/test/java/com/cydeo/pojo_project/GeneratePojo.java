@@ -43,10 +43,10 @@ public class GeneratePojo {
         for (Object each : map.keySet()) {
 
             if (map.get(each) instanceof List) {
-                isThereMap = true;
+                isThereList = true;
             }
             if (map.get(each) instanceof Map) {
-                isThereList = true;
+                isThereMap = true;
             }
 
         }
@@ -166,7 +166,9 @@ public class GeneratePojo {
 
                             from((Map<String, Object>) ((List<?>) entry).get(0), packageName, keyName);
                             writer.write("@JsonProperty(\"" + eachOne + "\")\n");
-                            writer.write("private List<" + classNameToCreated + "> " + validateReferenceName(eachOne) + ";\n");
+
+
+                            writer.write("private List<" + validateClassName(keyName) + "> " + validateReferenceName(eachOne) + ";\n");
                         }
                 }
                 if (entry instanceof Map) {
