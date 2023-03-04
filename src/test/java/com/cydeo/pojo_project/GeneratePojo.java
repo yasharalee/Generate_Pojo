@@ -271,10 +271,10 @@ public class GeneratePojo {
                 o += l;
             }
         }
-        str = o;
+
 
         // Making PascalCase
-        str = pascalCase(str);
+        str = pascalCase(o);
 
         return str;
     }
