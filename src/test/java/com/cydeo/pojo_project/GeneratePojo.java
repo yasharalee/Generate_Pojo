@@ -135,7 +135,7 @@ public class GeneratePojo {
 
             for (String eachOne : map.keySet()) {
 
-                keyName =eachOne;
+                keyName = eachOne;
 
 
                 Object entry = map.get(eachOne);
@@ -157,28 +157,28 @@ public class GeneratePojo {
                         keyName += num++;
                     }
 
-                        if (checkThisList((List) entry)) {
-                            String type = ((List<?>) entry).get(0).getClass().toString() ;
-                            String typeName = type.substring(type.lastIndexOf(".")+1);
-                            writer.write("@JsonProperty(\"" + eachOne + "\")\n");
-                            writer.write("private List<" + typeName + "> " + validateReferenceName(eachOne) + ";\n");
-                        } else {
+                    if (checkThisList((List) entry)) {
+                        String type = ((List<?>) entry).get(0).getClass().toString();
+                        String typeName = type.substring(type.lastIndexOf(".") + 1);
+                        writer.write("@JsonProperty(\"" + eachOne + "\")\n");
+                        writer.write("private List<" + typeName + "> " + validateReferenceName(eachOne) + ";\n");
+                    } else {
 
-                            from((Map<String, Object>) ((List<?>) entry).get(0), packageName, keyName);
-                            writer.write("@JsonProperty(\"" + eachOne + "\")\n");
+                        from((Map<String, Object>) ((List<?>) entry).get(0), packageName, keyName);
+                        writer.write("@JsonProperty(\"" + eachOne + "\")\n");
 
 
-                            writer.write("private List<" + validateClassName(keyName) + "> " + validateReferenceName(eachOne) + ";\n");
-                        }
+                        writer.write("private List<" + validateClassName(keyName) + "> " + validateReferenceName(eachOne) + ";\n");
+                    }
                 }
                 if (entry instanceof Map) {
                     exists = new File("src/test/java/com/cydeo/pojo_project/" + packageName + "/" + validateClassName(keyName) + ".java").exists();
 
-                    keyName = exists ? validateClassName(keyName)+ num++ : validateClassName(keyName);
+                    keyName = exists ? validateClassName(keyName) + num++ : validateClassName(keyName);
 
-                        writer.write("@JsonProperty(\"" + eachOne + "\")\n");
-                        from((Map<String, Object>) entry, packageName, validateClassName(keyName));
-                        writer.write("private " + validateClassName(keyName) + " " + validateReferenceName(eachOne) + ";\n");
+                    writer.write("@JsonProperty(\"" + eachOne + "\")\n");
+                    from((Map<String, Object>) entry, packageName, validateClassName(keyName));
+                    writer.write("private " + validateClassName(keyName) + " " + validateReferenceName(eachOne) + ";\n");
 
                 }
 
@@ -255,7 +255,17 @@ public class GeneratePojo {
             }
         }
 
-        // removes special characters from name
+
+        str = str.replace("-", " ");
+        str = str.replace("_", " ");
+        if (str.contains(" ")) {
+            str = pascalCase(str);
+        }
+
+
+        // removes special characters from name and make pascal case
+        str = str.replace("-", " ");
+        str = str.replace("_", " ");
         char[] r = str.toCharArray();
         List<Character> list = CharBuffer.wrap(r).chars().mapToObj(h -> (char) h).collect(Collectors.toList());
 
@@ -264,7 +274,7 @@ public class GeneratePojo {
 
         while (it.hasNext()) {
             Character l = it.next();
-            if (Character.isDigit(l) || Character.isLetter(l)) {
+            if (Character.isDigit(l) || Character.isLetter(l) || l == ' ') {
                 o += l;
             }
         }
@@ -272,12 +282,13 @@ public class GeneratePojo {
 
         // Making PascalCase
         str = pascalCase(str);
+
         return str;
     }
 
-    private static String validateReferenceName(String name){
+    private static String validateReferenceName(String name) {
         String s = validateClassName(name);
-        return s.substring(0,1).toLowerCase() + s.substring(1);
+        return s.substring(0, 1).toLowerCase() + s.substring(1);
 
     }
 
@@ -293,7 +304,7 @@ public class GeneratePojo {
         String[] s1 = str.split(" ");
         String d = "";
         for (String s : s1) {
-            d += str.substring(0, 1).toUpperCase() + str.substring(1);
+            d += s.substring(0, 1).toUpperCase() + s.substring(1);
         }
         return d;
     }

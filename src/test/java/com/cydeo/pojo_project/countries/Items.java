@@ -11,11 +11,11 @@ import java.util.List;
 public class Items {
 
 @JsonProperty("country_id")
-private String countryid;
+private String countryId;
 @JsonProperty("country_name")
-private String countryname;
+private String countryName;
 @JsonProperty("region_id")
-private int regionid;
+private int regionId;
 @JsonProperty("links")
 private List<Links> links;
 }
